@@ -1,31 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nitai_dog_api/models/dog_api.dart';
-import 'package:nitai_dog_api/view/details_screen.dart';
-import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class DetailsScreen extends StatefulWidget {
+  String dogName;
+
+  DetailsScreen({this.dogName});
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _DetailsScreenState createState() => _DetailsScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _DetailsScreenState extends State<DetailsScreen> {
+
   var dogAPI = DogAPI();
 
-  Future getAllBreeds() async {
-    var _allDogs = await dogAPI.getAllDogs();
-    return _allDogs;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  // Future getAllBreeds() async {
+  //   var _allDogs = await dogAPI.getAllDogs();
+  //   return _allDogs;
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(10.0),
@@ -41,14 +45,15 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
         title: new Text(
-          'Dog Breeds',
+          widget.dogName.toString()[0].toUpperCase() +
+              widget.dogName.toString().substring(1),
           style: GoogleFonts.pacifico(),
         ),
       ),
       body: Container(
         // child:
         child: FutureBuilder(
-          future: getAllBreeds(),
+          future: null,
           builder: (context, asyncSnapshot) {
             if (asyncSnapshot.connectionState == ConnectionState.none &&
                 asyncSnapshot.hasData == null) {
@@ -62,32 +67,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: asyncSnapshot.data.keys.toList().length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DetailsScreen(
-                                    dogName: asyncSnapshot.data.keys
-                                        .toList()[index])));
-                      },
+                      onTap: () {},
                       child: Card(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: ListTile(
-                            title: Text(asyncSnapshot.data.keys
-                                    .toList()[index]
-                                    .toString()[0]
-                                    .toUpperCase() +
-                                asyncSnapshot.data.keys
-                                    .toList()[index]
-                                    .toString()
-                                    .substring(1)),
-                            subtitle: Text(asyncSnapshot.data.values
-                                        .toList()[index]
-                                        .toString() ==
-                                    '[]'
-                                ? 'no sub-breeds available'
-                                : 'Sub-breed: ${asyncSnapshot.data.values.toList()[index].toString()}'),
+                            title: Text(''),
+                            subtitle: Text(''),
                           ),
                         ),
                       ),
