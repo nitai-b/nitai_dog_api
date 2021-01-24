@@ -47,7 +47,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
         ),
       ),
       body: Container(
-        // child:
         child: FutureBuilder(
           future: getImages(widget.dogName),
           builder: (context, asyncSnapshot) {
@@ -55,28 +54,33 @@ class _DetailsScreenState extends State<DetailsScreen> {
               return Center(child: Text('Oops... No Internet'));
             }
             if (asyncSnapshot.hasError) {
-              print(asyncSnapshot.error);
               return Center(child: Text('Oops... an error occured'));
             }
             if (asyncSnapshot.hasData) {
-              print(asyncSnapshot.data);
-
-              return ListView.builder(
-                  itemCount: asyncSnapshot.data.keys.toList().length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {},
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            title: Text(''),
-                            subtitle: Text(''),
-                          ),
-                        ),
+              return GridView.builder(
+                padding: const EdgeInsets.all(3.0),
+                itemCount: asyncSnapshot.data.length,
+                itemBuilder: (context, i) => ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: GridTile(
+                    child: GestureDetector(
+                      onTap: () {
+                        // Navigator.of(context).pushNamed(ProductDetailScreen.routeName, arguments: product.id);
+                      },
+                      child: Image.network(
+                        asyncSnapshot.data[i],
+                        fit: BoxFit.cover,
                       ),
-                    );
-                  });
+                    ),
+                  ),
+                ),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  childAspectRatio: 3 / 2,
+                  crossAxisSpacing: 2,
+                  mainAxisSpacing: 2,
+                ),
+              );
             }
             return Center(
               child: CircularProgressIndicator(),
