@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:nitai_dog_api/view/home_screen.dart';
-import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());

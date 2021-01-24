@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nitai_dog_api/models/dog_api.dart';
+import 'package:nitai_dog_api/view/full_screen_image.dart';
+import 'package:audioplayers/audio_cache.dart';
 
 class DetailsScreen extends StatefulWidget {
   String dogName;
@@ -19,6 +21,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
     return _allDogs;
   }
 
+  void playBarkSound() {
+    final AudioCache player = AudioCache(prefix: 'assets/');
+    player.play('dog_bark.mp3');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,27 +37,23 @@ class _DetailsScreenState extends State<DetailsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0))),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () {
-              print('trying to refresh');
-            },
-          )
-        ],
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(10.0),
+                bottomRight: Radius.circular(10.0))),
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
         title: new Text(
-          widget.dogName.toString()[0].toUpperCase() + widget.dogName.toString().substring(1),
-          style: GoogleFonts.pacifico(),
+          widget.dogName.toString()[0].toUpperCase() +
+              widget.dogName.toString().substring(1),
+          style: GoogleFonts.pacifico(fontSize: 28.0),
         ),
       ),
       body: Container(
         child: FutureBuilder(
           future: getImages(widget.dogName),
           builder: (context, asyncSnapshot) {
-            if (asyncSnapshot.connectionState == ConnectionState.none && asyncSnapshot.hasData == null) {
+            if (asyncSnapshot.connectionState == ConnectionState.none &&
+                asyncSnapshot.hasData == null) {
               return Center(child: Text('Oops... No Internet'));
             }
             if (asyncSnapshot.hasError) {
@@ -63,20 +66,32 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 itemBuilder: (context, i) => ClipRRect(
                   borderRadius: BorderRadius.circular(5.0),
                   child: GridTile(
-                    child: GestureDetector(
-                      onTap: () {
-                        // Navigator.of(context).pushNamed(ProductDetailScreen.routeName, arguments: product.id);
-                      },
-                      child: Image.network(
-                        asyncSnapshot.data[i],
-                        fit: BoxFit.cover,
+                    child: Image.network(
+                      asyncSnapshot.data[i],
+                      fit: BoxFit.cover,
+                    ),
+                    footer: GridTileBar(
+                      backgroundColor: Colors.black87,
+                      trailing: IconButton(
+                        icon: Icon(
+                          Icons.zoom_out_map,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FullScreenImage(
+                                        image_url: asyncSnapshot.data[i],
+                                        dogName: widget.dogName,
+                                      )));
+                        },
                       ),
                     ),
                   ),
                 ),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  childAspectRatio: 3 / 2,
+                  childAspectRatio: 5 / 8,
                   crossAxisSpacing: 2,
                   mainAxisSpacing: 2,
                 ),
