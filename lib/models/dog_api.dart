@@ -16,4 +16,18 @@ class DogAPI {
       print(response.reasonPhrase);
     }
   }
+
+  Future<List<String>> getImages(breed) async {
+    var json;
+    // json = await http.get('https://dog.ceo/api/breed/$breed/images/random/$number');
+    // json = await http.get('https://dog.ceo/api/breed/$breed/$subBreed/images/random/$number');
+    json = await http.get('https://dog.ceo/api/breed/$breed/images');
+    // json = await http.get('https://dog.ceo/api/breed/$breed/$subBreed/images');
+    var map = jsonDecode(json.body);
+    if (map['status'] == 'success') {
+      return map['message'].cast<String>();
+    } else {
+      throw "Can't load image";
+    }
+  }
 }

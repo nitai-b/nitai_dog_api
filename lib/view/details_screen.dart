@@ -12,13 +12,12 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-
   var dogAPI = DogAPI();
 
-  // Future getAllBreeds() async {
-  //   var _allDogs = await dogAPI.getAllDogs();
-  //   return _allDogs;
-  // }
+  Future getImages(dogName) async {
+    var _allDogs = await dogAPI.getImages(dogName);
+    return _allDogs;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +30,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(10.0),
-                bottomRight: Radius.circular(10.0))),
+            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0))),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
@@ -45,24 +42,25 @@ class _DetailsScreenState extends State<DetailsScreen> {
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
         title: new Text(
-          widget.dogName.toString()[0].toUpperCase() +
-              widget.dogName.toString().substring(1),
+          widget.dogName.toString()[0].toUpperCase() + widget.dogName.toString().substring(1),
           style: GoogleFonts.pacifico(),
         ),
       ),
       body: Container(
         // child:
         child: FutureBuilder(
-          future: null,
+          future: getImages(widget.dogName),
           builder: (context, asyncSnapshot) {
-            if (asyncSnapshot.connectionState == ConnectionState.none &&
-                asyncSnapshot.hasData == null) {
+            if (asyncSnapshot.connectionState == ConnectionState.none && asyncSnapshot.hasData == null) {
               return Center(child: Text('Oops... No Internet'));
             }
             if (asyncSnapshot.hasError) {
+              print(asyncSnapshot.error);
               return Center(child: Text('Oops... an error occured'));
             }
             if (asyncSnapshot.hasData) {
+              print(asyncSnapshot.data);
+
               return ListView.builder(
                   itemCount: asyncSnapshot.data.keys.toList().length,
                   itemBuilder: (BuildContext context, int index) {
