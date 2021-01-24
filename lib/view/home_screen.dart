@@ -12,20 +12,14 @@ class _HomeScreenState extends State<HomeScreen> {
   var dogAPI = DogAPI();
   List<String> _allBreeds;
 
-  Future getAllMainBreeds() async {
+  Future getAllBreeds() async {
     var _allDogs = await dogAPI.getAllDogs();
-    _allBreeds = _allDogs.keys.toList();
-    return _allBreeds;
-  }
-
-  Future getAllSubBreeds() async {
-    return 'this is a sub breed';
+    // _allBreeds = _allDogs.keys.toList();
+    return _allDogs;
   }
 
   @override
   void initState() {
-    // getAllMainBreeds();
-    // getAllSubBreeds();
     super.initState();
   }
 
@@ -39,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              // dogList.getBreeds();
+              print('trying to refresh');
             },
           )
         ],
@@ -53,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         // child:
         child: FutureBuilder(
-          future: getAllMainBreeds(),
+          future: getAllBreeds(),
           builder: (context, asyncSnapshot) {
             if (asyncSnapshot.connectionState == ConnectionState.none && asyncSnapshot.hasData == null) {
               return Center(child: Text('Oops... No Internet'));
@@ -62,10 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
               return Center(child: Text('Oops... an error occured'));
             }
             if (asyncSnapshot.hasData) {
-
-              print
               return ListView.builder(
-                  itemCount: asyncSnapshot.data.length,
+                  itemCount: asyncSnapshot.data.keys.toList().length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
                       onTap: () {
@@ -75,9 +67,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: ListTile(
-                            title: Text(asyncSnapshot.data[index].toString()[0].toUpperCase() +
-                                asyncSnapshot.data[index].toString().substring(1)),
-                            subtitle: Text('Breed Description'),
+                            title: Text(asyncSnapshot.data.keys.toList()[index].toString()[0].toUpperCase() +
+                                asyncSnapshot.data.keys.toList()[index].toString().substring(1)),
+                            subtitle: Text(asyncSnapshot.data.values.toList()[index].toString() == '[]'
+                                ? 'no sub-breeds available'
+                                : 'Sub-breed: ${asyncSnapshot.data.values.toList()[index].toString()}'),
                           ),
                         ),
                       ),
