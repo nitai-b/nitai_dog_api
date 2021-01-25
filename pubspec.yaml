@@ -32,7 +32,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  audioplayers: ^0.17.2
   http: ^0.12.2
   google_fonts: ^0.3.10
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nitai_dog_api/models/dog_api.dart';
 import 'package:nitai_dog_api/view/full_screen_image.dart';
-import 'package:audioplayers/audio_cache.dart';
 
 class DetailsScreen extends StatefulWidget {
   String dogName;
@@ -19,11 +18,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
   Future getImages(dogName) async {
     var _allDogs = await dogAPI.getImages(dogName);
     return _allDogs;
-  }
-
-  void playBarkSound() {
-    final AudioCache player = AudioCache(prefix: 'assets/');
-    player.play('dog_bark.mp3');
   }
 
   @override
